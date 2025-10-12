@@ -49,3 +49,25 @@ def make_move(req: MoveReq):
     db.add_move(req.game_id, req.uci, board.fen())
     # Run AI analysis: returns evaluation, suggestions, feedback
     analysis = ai_service.analyze_position(board, last_move=req.uci)
+
+    return {
+        "fen": board.fen(),
+        "moves": db.get_moves(req.game_id),
+        "analysis": analysis
+    }
+
+
+
+@router.get("/state/{game_id}")
+def get_state(game_id: str):
+    game = db.get_game(game_id)
+    if not game:
+        raise HTTPException(status_code=404, detail="Game not found")
+    board = chess.Board(game['fen'])
+    analysis = ai_service.analyze_position(board)
+    return {
+        "game_id": game_id,
+        "fen": game['fen'],
+        "moves": db.get_moves(game_id),
+        "analysis": analysis
+    }
