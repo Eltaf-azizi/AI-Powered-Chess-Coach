@@ -17,3 +17,12 @@ ai_service = AIService(engine_service, CONFIG.get('ai', {}))
 class AnalyzeReq(BaseModel):
     fen: str
     last_move: str = None
+
+
+@router.post("/analyze")
+def analyze(req: AnalyzeReq):
+    try:
+        board = chess.Board(req.fen)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid FEN: {e}")
+    return ai_service.analyze_position(board, last_move=req.last_move)
