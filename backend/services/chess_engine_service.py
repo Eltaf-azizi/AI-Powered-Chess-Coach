@@ -28,4 +28,26 @@ class ChessEngineService:
         """
         if not self.engine:
             return None
+        try:
+            info = self.engine.analyse(board, chess.engine.Limit(time=limit))
+            return info
+        except Exception as e:
+            print("[ChessEngineService] analyze error:", e)
+            return None
 
+    def bestmove(self, board: chess.Board, depth: int = 12):
+        if not self.engine:
+            return None
+        try:
+            res = self.engine.play(board, chess.engine.Limit(depth=depth))
+            return res.move
+        except Exception as e:
+            print("[ChessEngineService] bestmove error:", e)
+            return None
+
+    def quit(self):
+        try:
+            if self.engine:
+                self.engine.quit()
+        except Exception:
+            pass
