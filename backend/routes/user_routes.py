@@ -15,3 +15,10 @@ def create_user(req: CreateUserReq):
         raise HTTPException(status_code=400, detail="Username already exists")
     user_id = db.create_user(req.username)
     return {"user_id": user_id, "username": req.username}
+
+@router.get("/{user_id}")
+def get_user(user_id: int):
+    user = db.get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
