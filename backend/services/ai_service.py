@@ -60,3 +60,27 @@ class SimpleRecommender:
                 san = uci
             out.append({"uci": uci, "san": san, "score": score, "comment": "Fallback suggestion"})
         return out
+
+
+class SimpleFeedback:
+    def generate(self, board: chess.Board, last_move=None, eval_score=None):
+        notes = []
+        if last_move:
+            mv = None
+            try:
+                mv = chess.Move.from_uci(last_move)
+            except:
+                mv = None
+            if mv and board.is_capture(mv):
+                notes.append("You captured a piece. Check for recaptures.")
+        if eval_score is not None:
+            if eval_score > 300:
+                notes.append("You're ahead — trade pieces and consolidate.")
+            elif eval_score < -300:
+                notes.append("You're behind — look for defense and simplifications.")
+            else:
+                notes.append("Balanced position — improve piece activity.")
+        if not notes:
+            notes.append("Think about center control and piece development.")
+        return " ".join(notes)
+
