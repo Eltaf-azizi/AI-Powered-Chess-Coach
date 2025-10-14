@@ -101,3 +101,25 @@ class AIService:
             self.feedback = SimpleFeedback()
 
 
+    def analyze_position(self, board: chess.Board, last_move: str = None):
+        # Try engine first
+        engine_info = self.engine_service.analyze(board, limit=self.ai_config.get('engine_time', 0.05))
+        eval_cp = None
+        engine_best = None
+        if engine_info:
+            score = engine_info.get("score")
+            if score:
+                try:
+                    if score.is_mate():
+                        eval_cp = 100000.0 if score.white().mate() > 0 else -100000.0
+                    else:
+                        eval_cp = float(score.white().cp)
+                except Exception:
+                    eval_cp = None
+            try:
+                mv = self.engine_service.bestmove(board, depth=self.ai_config.get('engine_depth', 12))
+                if mv:
+                    engine_best = mv.uci()
+            except Exception:
+                engine_best = None
+
