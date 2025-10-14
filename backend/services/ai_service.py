@@ -123,3 +123,24 @@ class AIService:
             except Exception:
                 engine_best = None
 
+
+        # If top-level ai module exists use it, else fallback
+        if ai_available:
+            eval_cp = self.evaluator.evaluate_board(board) if eval_cp is None else eval_cp
+            suggestions = self.recommender.suggest_moves(board)
+            feedback = self.feedback.generate_feedback(board, last_move=last_move, eval_score=eval_cp)
+        else:
+            if eval_cp is None:
+                eval_cp = self.evaluator.material(board)
+            suggestions = self.recommender.suggestions(board)
+            # include engine_best if present
+            if engine_best and not any(s['uci'] == engine_best for s in suggestions):
+                suggestions.insert(0, {"uci": engine_best, "san": engine_best, "score": None, "comment": "Engine best move"})
+                suggestions = suggestions[:self.ai_config.get('suggestion_count', 3)]
+            feedback = self.feedback.generate(board, last_move=last_move, eval_score=eval_cp)
+
+        return {
+            "eval": eval_cp,
+            "suggestions": suggestions,
+            "feedback": feedback
+        }
