@@ -28,3 +28,35 @@ class SimpleEvaluator:
         chess.QUEEN: 900,
         chess.KING: 20000
     }
+
+    def material(self, board: chess.Board):
+        score = 0
+        for ptype,val in self.PIECE_VALUES.items():
+            score += len(board.pieces(ptype, chess.WHITE)) * val
+            score -= len(board.pieces(ptype, chess.BLACK)) * val
+        score += int(0.1 * len(list(board.legal_moves)))
+        return float(score)
+
+class SimpleRecommender:
+    def __init__(self, evaluator, suggestion_count=3):
+        self.evaluator = evaluator
+        self.count = suggestion_count
+
+    def suggestions(self, board: chess.Board):
+        # shallow score of legal moves: push, evaluate material, pop
+        moves = []
+        for mv in list(board.legal_moves):
+            board.push(mv)
+            score = self.evaluator.material(board)
+            board.pop()
+            moves.append((mv.uci(), score))
+        moves.sort(key=lambda x: x[1], reverse=(board.turn==chess.WHITE))
+        top = moves[:self.count]
+        out = []
+        for uci, score in top:
+            try:
+                san = board.san(chess.Move.from_uci(uci))
+            except Exception:
+                san = uci
+            out.append({"uci": uci, "san": san, "score": score, "comment": "Fallback suggestion"})
+        return out
