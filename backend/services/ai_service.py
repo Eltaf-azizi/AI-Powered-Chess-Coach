@@ -84,3 +84,20 @@ class SimpleFeedback:
             notes.append("Think about center control and piece development.")
         return " ".join(notes)
 
+
+class AIService:
+    def __init__(self, engine_service, ai_config: dict=None):
+        self.engine_service = engine_service
+        self.ai_config = ai_config or {}
+        # if ai/ package exists use it
+        if ai_available:
+            # Evaluator takes engine_service, config
+            self.evaluator = Evaluator(engine_service, self.ai_config)
+            self.recommender = Recommender(self.evaluator, self.ai_config)
+            self.feedback = FeedbackGenerator()
+        else:
+            self.evaluator = SimpleEvaluator()
+            self.recommender = SimpleRecommender(self.evaluator, suggestion_count=self.ai_config.get('suggestion_count', 3))
+            self.feedback = SimpleFeedback()
+
+
