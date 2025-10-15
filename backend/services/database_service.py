@@ -26,3 +26,38 @@ class DatabaseService:
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
+        # games
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS games (
+                id TEXT PRIMARY KEY,
+                fen TEXT,
+                mode TEXT,
+                white TEXT,
+                black TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        # moves
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS moves (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                game_id TEXT,
+                move_uci TEXT,
+                fen TEXT,
+                move_no INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (game_id) REFERENCES games(id)
+            );
+        """)
+        conn.commit()
+        conn.close()
+
+    # Users
+    def create_user(self, username: str) -> int:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        cur.execute("INSERT INTO users (username) VALUES (?)", (username,))
+        conn.commit()
+        uid = cur.lastrowid
+        conn.close()
+        return uid
