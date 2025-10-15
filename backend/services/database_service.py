@@ -97,3 +97,30 @@ class DatabaseService:
             return None
         return {"id": res[0], "fen": res[1], "mode": res[2], "white": res[3], "black": res[4], "created_at": res[5]}
 
+    def update_game_fen(self, game_id: str, fen: str):
+        conn = self._get_conn()
+        cur = conn.cursor()
+        cur.execute("UPDATE games SET fen=? WHERE id=?", (fen, game_id))
+        conn.commit()
+        conn.close()
+
+    # Moves
+    def add_move(self, game_id: str, move_uci: str, fen: str):
+        conn = self._get_conn()
+        cur = conn.cursor()
+        move_no = cur.execute("SELECT COUNT(*) FROM moves WHERE game_id=?", (game_id,)).fetchone()[0] + 1
+        cur.execute("INSERT INTO moves (game_id, move_uci, fen, move_no) VALUES (?, ?, ?, ?)", (game_id, move_uci, fen, move_no))
+        # update game's fen
+        cur.execute("UPDATE games SET fen=? WHERE id=?", (fen, game_id))
+        conn.commit()
+        conn.close()
+
+    def get_moves(self, game_id: str) -> List[dict]:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        rows = cur.execute("SELECT move_no, move_uci, fen, created_at FROM moves WHERE game_id=? ORDER BY move_no ASC", (game_id,)).fetchall()
+        conn.close()
+        out = []
+        for r in rows:
+            out.append({"move_no": r[0], "uci": r[1], "fen": r[2], "created_at": r[3]})
+        return out
