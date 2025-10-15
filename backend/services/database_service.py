@@ -61,3 +61,22 @@ class DatabaseService:
         uid = cur.lastrowid
         conn.close()
         return uid
+
+    def get_user_by_username(self, username: str) -> Optional[dict]:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        res = cur.execute("SELECT id, username, created_at FROM users WHERE username=? LIMIT 1", (username,)).fetchone()
+        conn.close()
+        if not res:
+            return None
+        return {"id": res[0], "username": res[1], "created_at": res[2]}
+
+    def get_user(self, user_id: int) -> Optional[dict]:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        res = cur.execute("SELECT id, username, created_at FROM users WHERE id=? LIMIT 1", (user_id,)).fetchone()
+        conn.close()
+        if not res:
+            return None
+        return {"id": res[0], "username": res[1], "created_at": res[2]}
+
