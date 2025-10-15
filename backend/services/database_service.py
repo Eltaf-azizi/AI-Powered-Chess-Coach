@@ -80,3 +80,20 @@ class DatabaseService:
             return None
         return {"id": res[0], "username": res[1], "created_at": res[2]}
 
+    # Games
+    def create_game(self, game_id: str, fen: str, mode: str, white: str, black: str):
+        conn = self._get_conn()
+        cur = conn.cursor()
+        cur.execute("INSERT INTO games (id, fen, mode, white, black) VALUES (?, ?, ?, ?, ?)", (game_id, fen, mode, white, black))
+        conn.commit()
+        conn.close()
+
+    def get_game(self, game_id: str) -> Optional[dict]:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        res = cur.execute("SELECT id, fen, mode, white, black, created_at FROM games WHERE id=? LIMIT 1", (game_id,)).fetchone()
+        conn.close()
+        if not res:
+            return None
+        return {"id": res[0], "fen": res[1], "mode": res[2], "white": res[3], "black": res[4], "created_at": res[5]}
+
