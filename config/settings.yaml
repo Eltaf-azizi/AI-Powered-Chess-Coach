@@ -1,0 +1,13 @@
+server:
+  host: "127.0.0.1"
+  port: 8000
+  debug: true
+
+engine:
+  stockfish_path: ""   # set to "/usr/bin/stockfish" or similar if installed
+
+ai:
+  fallback_search_depth: 2
+  suggestion_count: 3
+  engine_time: 0.05
+  engine_depth: 12
