@@ -84,3 +84,23 @@ def encode_board_features(board: chess.Board):
 
     features = material + mobility + king_in_check + castling + pawn_pst + knight_pst
     return np.array(features, dtype=float)
+
+
+def move_type_label(board: chess.Board, move: chess.Move) -> str:
+    """
+    Simple heuristic to label a move:
+    - capture: if move captures
+    - castle: castling move
+    - develop: moving knight or bishop from home rank in opening phase
+    - center: move to d4,e4,d5,e5
+    - other: fallback
+    """
+    try:
+        if board.is_capture(move):
+            return "capture"
+    except Exception:
+        pass
+
+    # castle
+    if board.is_castling(move):
+        return "castle"
