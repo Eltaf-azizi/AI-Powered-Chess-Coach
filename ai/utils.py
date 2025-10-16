@@ -51,3 +51,36 @@ def encode_board_features(board: chess.Board):
     # material counts per piece type (order: P,N,B,R,Q,K)
     piece_types = [chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN, chess.KING]
     material = []
+    for pt in piece_types:
+        material.append(len(board.pieces(pt, chess.WHITE)))
+    for pt in piece_types:
+        material.append(len(board.pieces(pt, chess.BLACK)))
+
+    mobility = [len(list(board.legal_moves))]
+
+    king_in_check = [1 if board.is_check() else 0]
+
+    castling = [
+        1 if board.has_kingside_castling_rights(chess.WHITE) else 0,
+        1 if board.has_queenside_castling_rights(chess.WHITE) else 0,
+        1 if board.has_kingside_castling_rights(chess.BLACK) else 0,
+        1 if board.has_queenside_castling_rights(chess.BLACK) else 0
+    ]
+
+    # piece-square sums (pawn and knight) for each color
+    def pst_sum(pt, color):
+        arr = PST.get(pt)
+        if arr is None:
+            return 0.0
+        s = 0.0
+        for sq in board.pieces(pt, color):
+            # pst is indexed from white's perspective; if black, mirror
+            idx = sq if color == chess.WHITE else chess.square_mirror(sq)
+            s += arr[idx]
+        return s
+
+    pawn_pst = [pst_sum(chess.PAWN, chess.WHITE), pst_sum(chess.PAWN, chess.BLACK)]
+    knight_pst = [pst_sum(chess.KNIGHT, chess.WHITE), pst_sum(chess.KNIGHT, chess.BLACK)]
+
+    features = material + mobility + king_in_check + castling + pawn_pst + knight_pst
+    return np.array(features, dtype=float)
