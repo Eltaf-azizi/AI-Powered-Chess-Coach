@@ -104,3 +104,26 @@ def move_type_label(board: chess.Board, move: chess.Move) -> str:
     # castle
     if board.is_castling(move):
         return "castle"
+
+    # center
+    center = [chess.E4, chess.D4, chess.E5, chess.D5]
+    if move.to_square in center:
+        return "center"
+
+    # develop: moving N/B from back rank within first 12 fullmoves
+    from_piece = board.piece_at(move.from_square)
+    if board.fullmove_number <= 12 and from_piece and from_piece.piece_type in (chess.KNIGHT, chess.BISHOP):
+        # if it's on rank 1 or 8 (back rank) and moves off back rank it's development
+        rank = chess.square_rank(move.from_square)
+        if rank in (0, 7):
+            return "develop"
+
+    return "other"
+
+def label_to_int(label: str) -> int:
+    return LABELS.index(label) if label in LABELS else LABELS.index("other")
+
+def int_to_label(i: int) -> str:
+    if 0 <= i < len(LABELS):
+        return LABELS[i]
+    return "other"
