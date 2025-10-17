@@ -58,3 +58,34 @@ class Evaluator:
                     return float(cp) if cp is not None else 0.0
             except Exception:
                 pass
+                
+        # 2) ML model
+        if self.model is not None:
+            try:
+                feat = encode_board_features(board).reshape(1, -1)
+                pred = self.model.predict(feat)
+                # model returns rough centipawn value
+                return float(pred[0])
+            except Exception as e:
+                print("[Evaluator] model prediction failed:", e)
+
+        # 3) fallback material eval
+        return float(self._material_eval(board))
+
+    def _material_eval(self, board: chess.Board) -> int:
+        # simple piece-value sum (centipawn style)
+        values = {
+            chess.PAWN: 100,
+            chess.KNIGHT: 320,
+            chess.BISHOP: 330,
+            chess.ROOK: 500,
+            chess.QUEEN: 900,
+            chess.KING: 20000
+        }
+        score = 0
+        for ptype, val in values.items():
+            score += len(board.pieces(ptype, chess.WHITE)) * val
+            score -= len(board.pieces(ptype, chess.BLACK)) * val
+        # small mobility factor
+        score += int(0.1 * len(list(board.legal_moves)))
+        return score
