@@ -35,3 +35,26 @@ class Evaluator:
             except Exception as e:
                 print(f"[Evaluator] Could not load model at {self.model_path}: {e}")
                 self.model = None
+
+    def evaluate_board(self, board: chess.Board) -> float:
+        """
+        Returns centipawn score from White's perspective (positive = White advantage).
+        Priority:
+         1) Use engine if available.
+         2) Use ML model if loaded.
+         3) Fallback material heuristic.
+        """
+        # 1) engine
+        if self.engine_service:
+            try:
+                info = self.engine_service.analyze(board, limit=self.config.get("engine_time", 0.05))
+                if info and "score" in info:
+                    score = info["score"]
+                    # convert to centipawns
+                    if score.is_mate():
+                        mate = score.white().mate()
+                        return 100000.0 if mate and mate > 0 else -100000.0
+                    cp = score.white().cp
+                    return float(cp) if cp is not None else 0.0
+            except Exception:
+                pass
