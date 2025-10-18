@@ -42,3 +42,25 @@ class Recommender:
         Return list of suggestions (ordered) of form:
         { uci, san, score (centipawn), strategy_label, comment }
         """
+        suggestions = []
+
+        # 1) Prefer engine best move if engine available
+        engine_best = None
+        if self.evaluator.engine_service:
+            try:
+                mv = self.evaluator.engine_service.bestmove(board, depth=self.config.get("engine_depth", 12))
+                if mv:
+                    engine_best = mv.uci()
+            except Exception:
+                engine_best = None
+
+        # Build candidate list: legal moves scored by evaluator (fast)
+        candidates = []
+        for mv in board.legal_moves:
+            board.push(mv)
+            score = self.evaluator.evaluate_board(board)
+            board.pop()
+            candidates.append((mv, score))
+
+        # Sort: if white to move, descending (maximize), else ascending
+        candidates.sort(key=lambda x: x[1], reverse=(board.turn == chess.WHITE))
