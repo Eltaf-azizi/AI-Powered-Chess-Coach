@@ -64,3 +64,37 @@ class Recommender:
 
         # Sort: if white to move, descending (maximize), else ascending
         candidates.sort(key=lambda x: x[1], reverse=(board.turn == chess.WHITE))
+
+        # pick top N
+        top = candidates[:max(self.count, 8)]
+
+        # Use model to predict strategy label per candidate if available
+        for mv, score in top:
+            san = None
+            try:
+                san = board.san(mv)
+            except Exception:
+                san = mv.uci()
+            # strategy label: from ML classifier if present; else use heuristic
+            label = None
+            if self.model is not None:
+                try:
+                    # encode position after move
+                    board.push(mv)
+                    feat = encode_board_features(board).reshape(1, -1)
+                    board.pop()
+                    pred = self.model.predict(feat)
+                    label = int_to_label(int(pred[0]))
+                except Exception:
+                    label = move_type_label(board, mv)
+            else:
+                label = move_type_label(board, mv)
+
+            comment = self._comment_for_label(label, mv)
+            suggestions.append({
+                "uci": mv.uci(),
+                "san": san,
+                "score": score,
+                "strategy": label,
+                "comment": comment
+            })
