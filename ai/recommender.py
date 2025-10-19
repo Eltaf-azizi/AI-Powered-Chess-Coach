@@ -98,3 +98,28 @@ class Recommender:
                 "strategy": label,
                 "comment": comment
             })
+
+        # If engine_best exists, ensure it's at top (if not already)
+        if engine_best:
+            if not any(s['uci'] == engine_best for s in suggestions):
+                try:
+                    board_move = chess.Move.from_uci(engine_best)
+                    san = board.san(board_move)
+                except Exception:
+                    san = engine_best
+                suggestions.insert(0, {"uci": engine_best, "san": san, "score": None, "strategy": "engine", "comment": "Engine recommended move"})
+        # limit to requested count
+        return suggestions[:self.count]
+
+    def _comment_for_label(self, label: str, move: chess.Move) -> str:
+        if label == "capture":
+            return "This move captures a piece — check for recaptures and safety."
+        if label == "develop":
+            return "Develops a minor piece — good in the opening and for piece activity."
+        if label == "center":
+            return "Gains or contests center control — strong strategic idea."
+        if label == "castle":
+            return "Castling improves king safety — consider prioritizing this."
+        if label == "other":
+            return "Improves position — consider tactics and safety."
+        return "Suggested move."
