@@ -15,3 +15,15 @@ class AnalysisPipeline:
         self.evaluator = Evaluator(engine_service, ai_config or {})
         self.recommender = Recommender(self.evaluator, ai_config or {})
         self.feedback_gen = FeedbackGenerator()
+
+
+    def analyze(self, board, last_move=None):
+        eval_cp = self.evaluator.evaluate_board(board)
+        suggestions = self.recommender.suggest_moves(board)
+        feedback = self.feedback_gen.generate_feedback(board, last_move=last_move, eval_score=eval_cp, suggestions=suggestions)
+        return {
+            "eval": eval_cp,
+            "suggestions": suggestions,
+            "feedback": feedback
+        }
+        
