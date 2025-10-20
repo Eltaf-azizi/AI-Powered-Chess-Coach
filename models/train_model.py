@@ -60,3 +60,32 @@ def find_stockfish(config_path=None):
         except Exception:
             pass
     return None
+
+def sample_positions_from_pgns(games_dir, max_positions=2000, per_game_limit=50):
+    """
+    Iterate through PGN files and sample positions.
+    Yields (fen, last_move_uci) where fen is board AFTER the move.
+    """
+    out = []
+    if not os.path.exists(games_dir):
+        return out
+    for pgn_file in Path(games_dir).glob("*.pgn"):
+        try:
+            with open(pgn_file, "r", encoding="utf-8", errors="ignore") as f:
+                while True:
+                    game = chess.pgn.read_game(f)
+                    if game is None:
+                        break
+                    board = game.board()
+                    count = 0
+                    for move in game.mainline_moves():
+                        board.push(move)
+                        # sample some positions to avoid too many per game
+                        if random.random() < 0.25 and count < per_game_limit:
+                            out.append((board.fen(), move.uci()))
+                            count += 1
+                        if len(out) >= max_positions:
+                            return out
+        except Exception as e:
+            print("Failed reading PGN", pgn_file, e)
+    return out
