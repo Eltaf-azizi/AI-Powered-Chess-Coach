@@ -124,3 +124,36 @@ def label_positions_with_stockfish(positions, stockfish_path, time_limit=0.05):
     finally:
         engine.quit()
     return labeled
+
+
+def generate_synthetic_dataset(n=500):
+    """
+    Generates simple random legal positions using random playouts
+    and uses a cheap heuristic evaluation as labels.
+    """
+    data = []
+    for _ in range(n):
+        board = chess.Board()
+        # play random small number of moves
+        for _ in range(random.randint(0, 20)):
+            if board.is_game_over():
+                break
+            moves = list(board.legal_moves)
+            board.push(random.choice(moves))
+        # pick one legal move and apply it to create a sample (post-move fen)
+        if list(board.legal_moves):
+            mv = random.choice(list(board.legal_moves))
+            board.push(mv)
+            fen = board.fen()
+            # heuristic eval via simple material
+            values = {
+                chess.PAWN: 100, chess.KNIGHT: 320, chess.BISHOP: 330,
+                chess.ROOK: 500, chess.QUEEN: 900, chess.KING: 20000
+            }
+            sc = 0
+            for ptype,val in values.items():
+                sc += len(board.pieces(ptype, chess.WHITE)) * val
+                sc -= len(board.pieces(ptype, chess.BLACK)) * val
+            best = mv.uci()
+            data.append((fen, mv.uci(), float(sc), best))
+    return data
