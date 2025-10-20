@@ -89,3 +89,38 @@ def sample_positions_from_pgns(games_dir, max_positions=2000, per_game_limit=50)
         except Exception as e:
             print("Failed reading PGN", pgn_file, e)
     return out
+
+def label_positions_with_stockfish(positions, stockfish_path, time_limit=0.05):
+    """
+    For each fen, run Stockfish to get evaluation (cp) and best move.
+    Returns list of tuples (fen, last_move_uci, eval_cp, best_move_uci)
+    """
+    engine = chess.engine.SimpleEngine.popen_uci(stockfish_path)
+    labeled = []
+    try:
+        for fen, last_move in tqdm(positions):
+            board = chess.Board(fen)
+            try:
+                info = engine.analyse(board, chess.engine.Limit(time=time_limit))
+                score = info.get("score")
+                if score is None:
+                    eval_cp = 0.0
+                else:
+                    if score.is_mate():
+                        mate = score.white().mate()
+                        eval_cp = 100000.0 if mate and mate > 0 else -100000.0
+                    else:
+                        eval_cp = float(score.white().cp)
+                # best move
+                try:
+                    mv = engine.play(board, chess.engine.Limit(depth=12))
+                    best = mv.move.uci() if mv and mv.move else None
+                except Exception:
+                    best = None
+            except Exception:
+                eval_cp = 0.0
+                best = None
+            labeled.append((fen, last_move, eval_cp, best))
+    finally:
+        engine.quit()
+    return labeled
