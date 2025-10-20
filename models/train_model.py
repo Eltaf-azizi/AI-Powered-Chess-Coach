@@ -184,3 +184,26 @@ def build_datasets(labeled_positions):
         else:
             lbl = "other"
         y_label.append(label_to_int(lbl))
+    if len(X) == 0:
+        return None, None, None
+    X = np.vstack(X)
+    y_eval = np.array(y_eval, dtype=float)
+    y_label = np.array(y_label, dtype=int)
+    return X, y_eval, y_label
+
+
+def train_and_save(X, y_eval, y_label, out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    # Regressor for evaluation
+    reg = RandomForestRegressor(n_estimators=100, n_jobs=max(1, multiprocessing.cpu_count()-1), random_state=42)
+    reg.fit(X, y_eval)
+    reg_path = os.path.join(out_dir, "move_evaluator.pkl")
+    joblib.dump(reg, reg_path)
+    print("Saved evaluator:", reg_path)
+
+    # Classifier for strategy label
+    clf = RandomForestClassifier(n_estimators=100, n_jobs=max(1, multiprocessing.cpu_count()-1), random_state=42)
+    clf.fit(X, y_label)
+    clf_path = os.path.join(out_dir, "strategy_recommender.pkl")
+    joblib.dump(clf, clf_path)
+    print("Saved recommender:", clf_path)
