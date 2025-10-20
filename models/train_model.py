@@ -207,3 +207,20 @@ def train_and_save(X, y_eval, y_label, out_dir):
     clf_path = os.path.join(out_dir, "strategy_recommender.pkl")
     joblib.dump(clf, clf_path)
     print("Saved recommender:", clf_path)
+
+
+def main(args):
+    stockfish_path = find_stockfish(args.config)  # attempt config if user provided
+    if args.verbose:
+        print("Stockfish path:", stockfish_path)
+    positions = []
+    if args.games_dir and os.path.exists(args.games_dir):
+        print("Sampling positions from PGNs in", args.games_dir)
+        positions = sample_positions_from_pgns(args.games_dir, max_positions=args.max_positions, per_game_limit=50)
+    if stockfish_path and len(positions) > 0:
+        print("Labeling positions with Stockfish...")
+        labeled = label_positions_with_stockfish(positions, stockfish_path, time_limit=args.engine_time)
+    elif len(positions) > 0:
+        # No stockfish, but we can still create synthetic labels (cheap)
+        print("Stockfish not found. Creating heuristic labels for sampled positions...")
+        labeled = []
