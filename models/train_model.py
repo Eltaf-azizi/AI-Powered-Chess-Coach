@@ -241,3 +241,27 @@ def main(args):
             if legal:
                 best = random.choice(legal).uci()
             labeled.append((fen, last, float(sc), best))
+    else:
+        # No PGNs; create synthetic dataset
+        print("No PGN data found. Generating synthetic dataset...")
+        labeled = generate_synthetic_dataset(n=args.max_positions)
+
+    X, y_eval, y_label = build_datasets(labeled)
+    if X is None:
+        print("No training data could be built. Exiting.")
+        return
+
+    print("Training with samples:", X.shape[0])
+    train_and_save(X, y_eval, y_label, args.out_dir)
+    print("Training complete.")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--games_dir", type=str, default=DEFAULT_GAMES_DIR, help="Directory with PGN files")
+    parser.add_argument("--out_dir", type=str, default=DEFAULT_OUT_DIR, help="Directory to save models")
+    parser.add_argument("--config", type=str, default=None, help="Path to config/settings.yaml (optional)")
+    parser.add_argument("--max_positions", type=int, default=1000, help="Max sampled positions")
+    parser.add_argument("--engine_time", type=float, default=0.05, help="Stockfish analysis time per position (s)")
+    parser.add_argument("--verbose", action="store_true")
+    args = parser.parse_args()
+    main(args)
