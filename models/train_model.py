@@ -224,3 +224,20 @@ def main(args):
         # No stockfish, but we can still create synthetic labels (cheap)
         print("Stockfish not found. Creating heuristic labels for sampled positions...")
         labeled = []
+        for fen, last in positions:
+            board = chess.Board(fen)
+            # heuristic eval
+            values = {
+                chess.PAWN: 100, chess.KNIGHT: 320, chess.BISHOP: 330,
+                chess.ROOK: 500, chess.QUEEN: 900, chess.KING: 20000
+            }
+            sc = 0
+            for ptype,val in values.items():
+                sc += len(board.pieces(ptype, chess.WHITE)) * val
+                sc -= len(board.pieces(ptype, chess.BLACK)) * val
+            # pick best_move as random legal move to derive label
+            best = None
+            legal = list(board.legal_moves)
+            if legal:
+                best = random.choice(legal).uci()
+            labeled.append((fen, last, float(sc), best))
