@@ -157,3 +157,30 @@ def generate_synthetic_dataset(n=500):
             best = mv.uci()
             data.append((fen, mv.uci(), float(sc), best))
     return data
+
+def build_datasets(labeled_positions):
+    """
+    Turn labeled positions into X (features), y_eval (float), y_label (int)
+    Where y_label is based on move_type_label(best_move) if best is present else 'other'
+    """
+    X = []
+    y_eval = []
+    y_label = []
+    for fen, last_move, eval_cp, best_move in labeled_positions:
+        try:
+            board = chess.Board(fen)
+        except Exception:
+            continue
+        feat = encode_board_features(board)
+        X.append(feat)
+        y_eval.append(eval_cp if eval_cp is not None else 0.0)
+        # determine label from best_move if exists
+        if best_move:
+            try:
+                mv = chess.Move.from_uci(best_move)
+                lbl = move_type_label(board, mv)  # label of move (post position should be same)
+            except Exception:
+                lbl = "other"
+        else:
+            lbl = "other"
+        y_label.append(label_to_int(lbl))
