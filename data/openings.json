@@ -1,0 +1,9 @@
+{
+  "Ruy Lopez": ["e2e4", "e7e5", "g1f3", "b8c6", "f1b5"],
+  "Sicilian Defence": ["e2e4", "c7c5"],
+  "French Defence": ["e2e4", "e7e6"],
+  "Caro-Kann": ["e2e4", "c7c6"],
+  "Queen's Gambit": ["d2d4", "d7d5", "c2c4"],
+  "King's Indian": ["d2d4", "g8f6", "c2c4", "g7g6"],
+  "London System": ["d2d4", "d7d5", "b1c3", "g8f6", "g1f3", "c8f5"]
+}
