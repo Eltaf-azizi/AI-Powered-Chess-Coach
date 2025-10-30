@@ -15,3 +15,12 @@
 - **Backend (FastAPI):** Game logic, user sessions, and communication between frontend and AI.  
 - **AI Engine (Python + ML):** Evaluates moves, recommends strategies, and generates coaching tips.
 
+
+
+## 🎯 Goal
+
+> **Goal:** Expand game AI logic with tips & ML  
+> **Output:** Online chess game → AI analyzes moves and suggests strategies
+
+The app doesn’t just show good or bad moves. It explains *why* a move is effective and what strategy it supports (e.g., development, control of center, defense, or attack).
+
