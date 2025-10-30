@@ -36,3 +36,18 @@ The app doesn’t just show good or bad moves. It explains *why* a move is effec
 | 🧩 **Openings Recognition** | Detects known openings and explains their principles |
 | 🧪 **Modular Architecture** | Backend, AI, and frontend work independently but communicate through APIs |
 
+
+## 🧠 How the AI Works
+### 1. Feature Extraction
+  Each position is turned into numerical features: material, mobility, king safety, etc.
+
+### 2. Evaluation Model
+  A trained RandomForestRegressor predicts the strength of a position.
+
+### 3. Strategy Recommender
+  A classifier predicts the “type” of move (development, capture, defense, etc.)
+
+### 4. Feedback Generator
+  Converts AI evaluations into natural-language advice like:
+
+   “Consider developing your minor pieces before pushing pawns further.”
