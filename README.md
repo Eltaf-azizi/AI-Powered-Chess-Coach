@@ -87,6 +87,21 @@ npm run dev
 Frontend runs at http://localhost:5173
  (or as printed in terminal)
 
+
+## 🧩 API Reference
+
+|Endpoint |	Method |	Description |
+|--------|--------|--------------|
+|/	GET |	Health | check |
+|/game/start |	POST |	Start a new game|
+|/game/move |	POST |	Submit a move and get AI analysis|
+|/game/state/{id} |	GET |	Get current game state|
+|/ai/analyze |	POST |	Analyze arbitrary FEN position|
+
+See docs/api_reference.md
+ for complete payloads.
+
+
 ## 🧠 How the AI Works
 ### 1. Feature Extraction
   Each position is turned into numerical features: material, mobility, king safety, etc.
