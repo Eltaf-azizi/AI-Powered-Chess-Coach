@@ -37,6 +37,14 @@ The app doesn’t just show good or bad moves. It explains *why* a move is effec
 | 🧪 **Modular Architecture** | Backend, AI, and frontend work independently but communicate through APIs |
 
 
+## ⚙️ Installation and Setup
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/<your-username>/ai-powered-chess-coach.git
+cd ai-powered-chess-coach
+```
+
 ## 🧠 How the AI Works
 ### 1. Feature Extraction
   Each position is turned into numerical features: material, mobility, king safety, etc.
