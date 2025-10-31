@@ -45,6 +45,24 @@ git clone https://github.com/<your-username>/ai-powered-chess-coach.git
 cd ai-powered-chess-coach
 ```
 
+
+### 2. Create and Activate Virtual Environment
+```
+python -m venv venv
+source venv/bin/activate    # on macOS / Linux
+venv\Scripts\activate       # on Windows
+```
+
+### 3. Install Backend Dependencies
+```
+pip install -r requirements.txt
+```
+
+### 4. Run Database Setup (Optional)
+```
+python scripts/setup_db.py
+```
+
 ## 🧠 How the AI Works
 ### 1. Feature Extraction
   Each position is turned into numerical features: material, mobility, king safety, etc.
