@@ -63,6 +63,30 @@ pip install -r requirements.txt
 python scripts/setup_db.py
 ```
 
+### 5. Train AI Models (if you haven’t yet)
+```
+python models/train_model.py
+```
+
+This creates move_evaluator.pkl and strategy_recommender.pkl in the models/ folder.
+
+### 6. Start the Backend
+```
+uvicorn backend.app:app --reload
+```
+
+Backend runs at http://127.0.0.1:8000
+
+### 7. Start the Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs at http://localhost:5173
+ (or as printed in terminal)
+
 ## 🧠 How the AI Works
 ### 1. Feature Extraction
   Each position is turned into numerical features: material, mobility, king safety, etc.
