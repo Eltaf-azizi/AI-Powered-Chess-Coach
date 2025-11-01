@@ -169,3 +169,13 @@ Frontend (if using Jest/Vitest):
 ```
 npm test
 ```
+
+## 📄 Documentation
+
+ - docs/architecture.md : system design overview
+
+ - docs/api_reference.md : endpoints and usage
+
+ - docs/model_notes.md : AI and ML details
+
+ - docs/ui_wireframes/ : mockups and visual references
