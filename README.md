@@ -101,6 +101,33 @@ Frontend runs at http://localhost:5173
 See docs/api_reference.md
  for complete payloads.
 
+## 💻 Tech Stack
+### Backend
+
+ - FastAPI – RESTful API framework
+
+ - python-chess – Chess rules and move validation
+
+ - SQLite – Lightweight game storage
+
+ - Scikit-learn – ML models for move evaluation
+
+### Frontend
+
+ - React + Vite – Fast modern web app
+
+ - react-chessboard – Chess UI component
+
+ - Axios – API communication
+
+### AI / ML
+
+ - RandomForest models for evaluation and strategy classification
+
+ - Custom feature extraction from chessboard positions
+
+ - Optional integration with Stockfish for hybrid analysis
+
 
 ## 🧠 How the AI Works
 ### 1. Feature Extraction
