@@ -143,3 +143,17 @@ See docs/api_reference.md
   Converts AI evaluations into natural-language advice like:
 
    “Consider developing your minor pieces before pushing pawns further.”
+
+
+## 📈 Example Output
+
+When a player moves:
+```
+{
+  "analysis": {
+    "eval": 0.54,
+    "suggestions": ["Nf3", "Bc4", "d3"],
+    "feedback": "Good central control. Develop your kingside bishop next."
+  }
+}
+```
