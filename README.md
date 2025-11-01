@@ -157,3 +157,15 @@ When a player moves:
   }
 }
 ```
+
+## 🧪 Testing
+
+Run all backend tests:
+```
+pytest -q
+```
+
+Frontend (if using Jest/Vitest):
+```
+npm test
+```
