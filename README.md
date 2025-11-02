@@ -173,9 +173,15 @@ npm test
 ## 📄 Documentation
 
  - docs/architecture.md : system design overview
-
  - docs/api_reference.md : endpoints and usage
-
  - docs/model_notes.md : AI and ML details
-
  - docs/ui_wireframes/ : mockups and visual references
+
+
+## 🌍 Future Improvements
+
+ - Add user authentication and game history
+ - Train deeper models using large PGN datasets
+ - Integrate reinforcement learning for adaptive coaching
+ - Real-time multiplayer with socket-based updates
+ - Personalized learning plans based on user patterns
