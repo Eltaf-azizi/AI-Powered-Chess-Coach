@@ -185,3 +185,16 @@ npm test
  - Integrate reinforcement learning for adaptive coaching
  - Real-time multiplayer with socket-based updates
  - Personalized learning plans based on user patterns
+
+
+🧑‍💻 Contributing
+
+Contributions are welcome!
+If you find a bug or have an idea for improvement:
+
+ 1. Fork the repository
+ 2. Create a new branch
+ 3. Commit your changes
+ 4. Submit a pull request
+
+Please make sure your code follows the existing structure and includes tests when possible.
