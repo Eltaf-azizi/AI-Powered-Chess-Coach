@@ -198,3 +198,9 @@ If you find a bug or have an idea for improvement:
  4. Submit a pull request
 
 Please make sure your code follows the existing structure and includes tests when possible.
+
+## 💬 Author
+
+Developer: Eltaf Azizi
+
+AI & Full-Stack Developer passionate about combining game design and machine learning.
