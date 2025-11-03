@@ -187,7 +187,7 @@ npm test
  - Personalized learning plans based on user patterns
 
 
-🧑‍💻 Contributing
+## 🧑‍💻 Contributing
 
 Contributions are welcome!
 If you find a bug or have an idea for improvement:
